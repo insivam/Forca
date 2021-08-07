@@ -1,5 +1,6 @@
 # opens the word file, and if necessary creates one
 from math import e
+from time import sleep
 
 
 def open_file(am='r'):
@@ -48,6 +49,8 @@ def play():
     while True:
         word = data[randint(0, len(data)-1)].replace('\n', '')
         lifes = ceil(len(word)*.8)
+        if lifes > 15:
+            lifes = 15
         guesses = 0
         f_word = []
 
@@ -193,7 +196,33 @@ def delete():
         return
 
 
+def regras():
+    lines('Regras')
+    regra = '''O jogo da forca é um jogo em que o jogador tem que acertar qual é a palavra proposta, tendo como dica o número de letras.
+O jogador começa com uma quantidade de tentivas, a cada letra errada, o jogador perde uma tentativa.
+O jogo termina ou com o acerto da palavra ou com o término de tentativas.
+
+Exemplo:
+
+M E R C A D O ------> _ _ _ _ _ _ _
+O jogador que tenta adivinhar a palavra deve ir digitando as letras que podem existir na palavra.
+Cada letra que ele acerta é escrita no espaço correspondente.
+
+M E R C A D O → M _ _ C A _ _
+Caso a letra não exista nessa palavra, é subtraido 1 de suas tentativas
+
+O jogador pode escolher entre digitar uma letra ou fazer uma tentativa perigosa de adivinhar a palavra, digitando a palavra que pensa que é.
+
+Caso o jogador deseja fazer uma tentativa perigosa de tentar adivinhar a palavra digitando e ele errar a palavra ele perde na hora.
+
+O jogo é ganho se a palavra é adivinhada. Caso o jogador não descubra qual palavra é ele que perde.'''
+
+    for i in regra:
+        print(i, end='')
+        sleep(.045)
+
+
 # Calls one of the functions above
 def call(num):
-    lst = [play, view, add, delete]
+    lst = [play, view, add, delete, exit, regras]
     lst[num-1]()
