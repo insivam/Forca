@@ -23,7 +23,7 @@ def menu(lst):  # Brings up a menu in console
                 print('\033[31mResposta invalida\033[m')
                 continue
 
-            if UI == len(lst):
+            if UI == 5:
                 print('Até a proxima!')
                 exit()
 
