@@ -25,17 +25,17 @@ O jogo é ganho se a palavra é adivinhada. Caso o jogador não descubra qual pa
 def open_file(am='r'):
     global file
     try:
-        with open('Words', 'rt'):
+        with open('Words', 'rt', encoding='utf-8') as file:
             creat = False
     except:
         try:
-            with open('Words', 'x') as file:
+            with open('Words', 'x', encoding='utf-8') as file:
                 creat = True
         except:
             print('\033[31mSistema falhou em criar o arquivo!\033[m')
             exit()
     try:
-        file = open('Words', am)
+        file = open('Words', am, encoding='utf-8')
     except Exception:
         print('\033[31mNão foi possivel abrir o arquivo!\033[m')
     else:
