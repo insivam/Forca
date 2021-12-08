@@ -1,8 +1,27 @@
-# opens the word file, and if necessary creates one
-from math import e
 from time import sleep
+from math import e
+regra = '''O jogo da forca é um jogo em que o jogador tem que acertar qual é a palavra proposta, tendo como dica o número de letras.
+O jogador começa com uma quantidade de tentivas, a cada 1 letra errada, o jogador perde uma tentativa.
+O jogo termina com o acerto da palavra ou com o término de tentativas.
+
+Exemplo:
+
+M E R C A D O ------> _ _ _ _ _ _ _
+O jogador deve ir digitando as letras que podem existir na palavra.
+A cada letra correta é escrita no espaço correspondente.
+
+M E R C A D O → M _ _ C A _ _
+Caso a letra não exista nessa palavra, é subtraido 1 de suas tentativas
+
+O jogador pode escolher entre digitar uma letra ou fazer uma tentativa perigosa de adivinhar a palavra, digitando a palavra que pensa que é.
+
+Caso o jogador deseja fazer uma tentativa perigosa de tentar adivinhar a palavra digitando e ele errar a palavra ele perde na hora.
+
+O jogo é ganho se a palavra é adivinhada. Caso o jogador não descubra qual palavra é, ele perde o jogo.
+'''
 
 
+# opens the word file, and if necessary creates one
 def open_file(am='r'):
     global file
     try:
@@ -26,9 +45,9 @@ def open_file(am='r'):
 
 # Creates a cool loking title
 def lines(msg):
-    print('-'*25)
-    print(msg.center(25))
-    print('-'*25)
+    print('-'*33)
+    print(msg.center(33))
+    print('-'*33)
 
 
 # Let's you play the game
@@ -51,6 +70,7 @@ def play():
         lifes = ceil(len(word)*.8)
         if lifes > 15:
             lifes = 15
+        lifes = max(6, lifes)
         guesses = 0
         f_word = []
 
@@ -65,29 +85,36 @@ def play():
             for i in f_word:
                 print(i, end=' ')
             print(f'   💡= {guesses} 💚 = {lifes}')
+            if lifes == 0:
+                UI = input('Advinha uma palavra: ').upper(
+                ).strip().replace(' ', '-')
+                if UI == word:
+                    guessed = True
+                    break
+                break
             UI = input('Advinhe uma letra ou a palavra: ').upper(
             ).strip().replace(' ', '-')
 
             if len(UI) == len(word):
-                if UI == word:
+                if UI.lower() == word.lower():
                     guessed = True
                 break
 
             if UI == '' or UI[0] in f_word:
+                print()
                 continue
 
             guesses += 1
             lifes -= 1
 
-            if '_' not in ''.join(f_word):
+            print()
+
+            for c, l in enumerate(word):
+                if l == UI[0]:
+                    f_word[c] = l
+            if '_' not in f_word:
                 guessed = True
                 break
-            elif lifes == 0:
-                break
-            else:
-                for c, l in enumerate(word):
-                    if l == UI[0]:
-                        f_word[c] = l
 
         print()
         print(f'A palavra era {word}'.center(27))
@@ -103,8 +130,10 @@ def play():
             if UI in 'SN':
                 break
             print('\033[31mResposta invalida\033[m')
+
+        print()
         if UI == 'S':
-            continue
+            play()
         return
 
 
@@ -198,28 +227,9 @@ def delete():
 
 def regras():
     lines('Regras')
-    regra = '''O jogo da forca é um jogo em que o jogador tem que acertar qual é a palavra proposta, tendo como dica o número de letras.
-O jogador começa com uma quantidade de tentivas, a cada letra errada, o jogador perde uma tentativa.
-O jogo termina ou com o acerto da palavra ou com o término de tentativas.
-
-Exemplo:
-
-M E R C A D O ------> _ _ _ _ _ _ _
-O jogador que tenta adivinhar a palavra deve ir digitando as letras que podem existir na palavra.
-Cada letra que ele acerta é escrita no espaço correspondente.
-
-M E R C A D O → M _ _ C A _ _
-Caso a letra não exista nessa palavra, é subtraido 1 de suas tentativas
-
-O jogador pode escolher entre digitar uma letra ou fazer uma tentativa perigosa de adivinhar a palavra, digitando a palavra que pensa que é.
-
-Caso o jogador deseja fazer uma tentativa perigosa de tentar adivinhar a palavra digitando e ele errar a palavra ele perde na hora.
-
-O jogo é ganho se a palavra é adivinhada. Caso o jogador não descubra qual palavra é ele que perde.'''
-
     for i in regra:
         print(i, end='')
-        sleep(.045)
+        sleep(.035)
 
 
 # Calls one of the functions above
