@@ -104,15 +104,16 @@ def play():
             if UI == '' or UI[0] in f_word:
                 continue
 
-            guesses += 1
-            lifes -= 1
-
             if lifes == 0:
                 break
+
+            guesses += 1
+            lifes -= 1
 
             for c, l in enumerate(word):
                 if l == UI[0]:
                     f_word[c] = l
+
             if '_' not in f_word:
                 guessed = True
                 break
@@ -231,10 +232,10 @@ def regras():
     lines('Regras')
     for i in regra:
         print(i, end='')
-        sleep(.035)
+        sleep(.03)
 
 
 # Calls one of the functions above
 def call(num):
-    lst = [play, view, add, delete, exit, regras]
+    lst = [play, view, add, delete, regras]
     lst[num-1]()
