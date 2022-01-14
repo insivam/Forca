@@ -53,6 +53,32 @@ def lines(msg):
 def reset_line():
     print('\r' + 60 * ' ', end='\r')
 
+
+def acentos(D, word, f_word):
+    if D == 'C':
+        A = 'CÇ'
+
+    if D == 'A':
+        A = 'AÁÀÂÃÄ'
+
+    elif D == 'E':
+        A = 'EÉÈÊË'
+
+    elif D == 'I':
+        A = 'IÍÌÎÏ'
+
+    elif D == 'O':
+        A = 'OÓÒÔÕÖ'
+
+    elif D == 'U':
+        A = 'UÚÙÛÜ'
+
+    for k in A:
+        for c, l in enumerate(word):
+            if l == k:
+                f_word[c] = l
+    return f_word
+
 # Let's you play the game
 
 
@@ -72,12 +98,7 @@ def play():
 
     while True:
         word = data[randint(0, len(data)-1)].replace('\n', '')
-        lifes = ceil(len(word)*.8)
-        if lifes > 15:
-            lifes = 15
-        lifes = max(6, lifes)
-        guesses = 0
-        f_word = []
+        lifes, guesses, f_word, = 7, 0, []
 
         for i in word:
             if i != '-':
@@ -100,6 +121,9 @@ def play():
                 if UI.lower() == word.lower():
                     guessed = True
                 break
+
+            if UI in 'AEIOUC':
+                f_word = acentos(UI, word, f_word)
 
             if UI == '' or UI[0] in f_word:
                 continue
