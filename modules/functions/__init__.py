@@ -50,33 +50,21 @@ def lines(msg):
     print('-'*33)
 
 
-def reset_line():
-    print('\r' + 60 * ' ', end='\r')
-
-
 def acentos(D, word, f_word):
-    if D == 'C':
-        A = 'CÇ'
+    dicionario = {'C': 'CÇ',
+                  'A': 'ÁÂÃÀÅ',
+                  'E': 'ÉÊÈ',
+                  'I': 'ÍÎÌ',
+                  'O': 'ÓÔÕÒØ',
+                  'U': 'ÚÛÙ'}
 
-    if D == 'A':
-        A = 'AÁÀÂÃÄ'
+    for k, v in dicionario.items():
+        if D == k:
+            for i in v:
+                for c, l in enumerate(word):
+                    if l == i:
+                        f_word[c] = l
 
-    elif D == 'E':
-        A = 'EÉÈÊË'
-
-    elif D == 'I':
-        A = 'IÍÌÎÏ'
-
-    elif D == 'O':
-        A = 'OÓÒÔÕÖ'
-
-    elif D == 'U':
-        A = 'UÚÙÛÜ'
-
-    for k in A:
-        for c, l in enumerate(word):
-            if l == k:
-                f_word[c] = l
     return f_word
 
 # Let's you play the game
@@ -98,54 +86,82 @@ def play():
 
     while True:
         word = data[randint(0, len(data)-1)].replace('\n', '')
-        lifes, guesses, f_word, = 7, 0, []
+        lifes, guesses, f_word, letras, guessed = 7, 0, [], [], False
 
         for i in word:
-            if i != '-':
-                f_word.append('_')
-            else:
+            if i == '-':
                 f_word.append('-')
-
-        guessed = False
+            else:
+                f_word.append('_')
         while True:
-            for i in f_word:
-                print(i, end=' ')
-            print(f'   💡 = {guesses} 💚 = {lifes}')
+            print(' ____ ')
+            print(f'| /  |  {f"💚 = {lifes}  💡 = {guesses}".center(23)}')
+            print('|/   O     'if lifes <= 6 else '|/       ', end='')
+            print(' '.join(letras).center(23))
+            if lifes == 5:
+                print('|    | ')
+            elif lifes == 4:
+                print('|   /| ')
+            elif lifes <= 3:
+                print('|   /|\\')
+            else:
+                print('|')
+
+            if lifes == 2:
+                print('|   / ')
+            elif lifes <= 1:
+                print('|   / \\')
+            else:
+                print('|')
+            print('|', end='')
+
+            print(*f_word, sep=' ')
 
             UI = input('Advinhe uma letra ou a palavra: ').upper(
             ).strip().replace(' ', '-')
-
-            print('\x1B[3A')
 
             if len(UI) == len(word):
                 if UI.lower() == word.lower():
                     guessed = True
                 break
 
+            if UI == '' or UI[0] in f_word or UI[0] in letras:
+                print('\x1B[8A')
+                continue
+            else:
+                letras.append(UI)
+                guesses += 1
+
             if UI in 'AEIOUC':
                 f_word = acentos(UI, word, f_word)
-
-            if UI == '' or UI[0] in f_word:
-                continue
 
             if lifes == 0:
                 break
 
-            guesses += 1
-            lifes -= 1
-
+            guessedletter = False
             for c, l in enumerate(word):
                 if l == UI[0]:
                     f_word[c] = l
+                    guessedletter = True
+
+            if not guessedletter:
+                lifes -= 1
 
             if '_' not in f_word:
                 guessed = True
                 break
 
+            print('\x1B[8A')
+
+        print()
+
+        print('='*33)
+        print('Parabéns! Você acertou!'.center(33)
+              if guessed else 'Você perdeu!'.center(33))
         print(f'A palavra era {word}'.center(33))
-        reset_line()
-        print(f'Adivinhou em {guesses} tentativas | {lifes+1} vidas' if guessed
-              else f'Acabou suas vidas | {guesses} tentativas')
+        print(f'{guesses} tentativas | {lifes} vidas'.center(33) if guessed
+              else f'Acabou suas vidas | {guesses-1} tentativas'.center(33))
+        print('='*33)
 
         print()
         while True:
