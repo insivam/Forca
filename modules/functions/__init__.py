@@ -67,10 +67,8 @@ def acentos(D, word, f_word):
 
     return f_word
 
-# Let's you play the game
 
-
-def play():
+def play():  # Let's you play the game
     from math import ceil
     from random import randint
 
@@ -84,7 +82,7 @@ def play():
         print('Adicione algumas palavras :)')
         return
 
-    while True:
+    while True:  # calculates all of the initial variables
         word = data[randint(0, len(data)-1)].replace('\n', '')
         lifes, guesses, f_word, letras, guessed = 7, 0, [], [], False
 
@@ -93,7 +91,7 @@ def play():
                 f_word.append('-')
             else:
                 f_word.append('_')
-        while True:
+        while True:  # shows the bodie of the game
             print(' ____ ')
             print(f'| /  |  {f"💚 = {lifes}  💡 = {guesses}".center(23)}')
             print('|/   O     'if lifes <= 6 else '|/       ', end='')
@@ -180,7 +178,7 @@ def play():
         return
 
 
-# View all the words in the game
+# View all the words in the game library
 def view():
     lines('PALAVRAS')
 
@@ -196,7 +194,7 @@ def view():
         print(line.replace('\n', '').center(25))
 
 
-# Add a new Word to the game
+# Adds a new Word to the game library
 def add():
     lines('ADICIONAR')
     while True:
@@ -230,7 +228,7 @@ def add():
         return
 
 
-# Delete a word from the game
+# Delete a word from the game library
 def delete():
     lines('DELETAR')
     while True:
@@ -268,6 +266,7 @@ def delete():
         return
 
 
+# Displays all the rules of the game on a fast reading pace
 def regras():
     lines('Regras')
     for i in regra:
