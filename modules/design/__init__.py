@@ -1,5 +1,7 @@
+from time import sleep
+
+
 def menu(lst):  # Brings up a menu in console
-    from time import sleep
 
     while True:
         sleep(1.5)

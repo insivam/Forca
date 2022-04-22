@@ -50,13 +50,25 @@ def lines(msg):
     print('-'*33)
 
 
-def reset_line():
-    print('\r' + 60 * ' ', end='\r')
+def acentos(D, word, f_word):
+    dicionario = {'C': 'CÇ',
+                  'A': 'ÁÂÃÀÅ',
+                  'E': 'ÉÊÈ',
+                  'I': 'ÍÎÌ',
+                  'O': 'ÓÔÕÒØ',
+                  'U': 'ÚÛÙ'}
 
-# Let's you play the game
+    for k, v in dicionario.items():
+        if D == k:
+            for i in v:
+                for c, l in enumerate(word):
+                    if l == i:
+                        f_word[c] = l
+
+    return f_word
 
 
-def play():
+def play():  # Let's you play the game
     from math import ceil
     from random import randint
 
@@ -70,58 +82,84 @@ def play():
         print('Adicione algumas palavras :)')
         return
 
-    while True:
+    while True:  # calculates all of the initial variables
         word = data[randint(0, len(data)-1)].replace('\n', '')
-        lifes = ceil(len(word)*.8)
-        if lifes > 15:
-            lifes = 15
-        lifes = max(6, lifes)
-        guesses = 0
-        f_word = []
+        lifes, guesses, f_word, letras, guessed = 7, 0, [], [], False
 
         for i in word:
-            if i != '-':
-                f_word.append('_')
-            else:
+            if i == '-':
                 f_word.append('-')
+            else:
+                f_word.append('_')
+        while True:  # shows the bodie of the game
+            print(' ____ ')
+            print(f'| /  |  {f"💚 = {lifes}  💡 = {guesses}".center(23)}')
+            print('|/   O     'if lifes <= 6 else '|/       ', end='')
+            print(' '.join(letras).center(23))
+            if lifes == 5:
+                print('|    | ')
+            elif lifes == 4:
+                print('|   /| ')
+            elif lifes <= 3:
+                print('|   /|\\')
+            else:
+                print('|')
 
-        guessed = False
-        while True:
-            for i in f_word:
-                print(i, end=' ')
-            print(f'   💡 = {guesses} 💚 = {lifes}')
+            if lifes == 2:
+                print('|   / ')
+            elif lifes <= 1:
+                print('|   / \\')
+            else:
+                print('|')
+            print('|', end='')
+
+            print(*f_word, sep=' ')
 
             UI = input('Advinhe uma letra ou a palavra: ').upper(
             ).strip().replace(' ', '-')
-
-            print('\x1B[3A')
 
             if len(UI) == len(word):
                 if UI.lower() == word.lower():
                     guessed = True
                 break
 
-            if UI == '' or UI[0] in f_word:
+            if UI == '' or UI[0] in f_word or UI[0] in letras:
+                print('\x1B[8A')
                 continue
+            else:
+                letras.append(UI)
+                guesses += 1
+
+            if UI in 'AEIOUC':
+                f_word = acentos(UI, word, f_word)
 
             if lifes == 0:
                 break
 
-            guesses += 1
-            lifes -= 1
-
+            guessedletter = False
             for c, l in enumerate(word):
                 if l == UI[0]:
                     f_word[c] = l
+                    guessedletter = True
+
+            if not guessedletter:
+                lifes -= 1
 
             if '_' not in f_word:
                 guessed = True
                 break
 
+            print('\x1B[8A')
+
+        print()
+
+        print('='*33)
+        print('Parabéns! Você acertou!'.center(33)
+              if guessed else 'Você perdeu!'.center(33))
         print(f'A palavra era {word}'.center(33))
-        reset_line()
-        print(f'Adivinhou em {guesses} tentativas | {lifes+1} vidas' if guessed
-              else f'Acabou suas vidas | {guesses} tentativas')
+        print(f'{guesses} tentativas | {lifes} vidas'.center(33) if guessed
+              else f'Acabou suas vidas | {guesses-1} tentativas'.center(33))
+        print('='*33)
 
         print()
         while True:
@@ -140,7 +178,7 @@ def play():
         return
 
 
-# View all the words in the game
+# View all the words in the game library
 def view():
     lines('PALAVRAS')
 
@@ -156,7 +194,7 @@ def view():
         print(line.replace('\n', '').center(25))
 
 
-# Add a new Word to the game
+# Adds a new Word to the game library
 def add():
     lines('ADICIONAR')
     while True:
@@ -190,7 +228,7 @@ def add():
         return
 
 
-# Delete a word from the game
+# Delete a word from the game library
 def delete():
     lines('DELETAR')
     while True:
@@ -228,6 +266,7 @@ def delete():
         return
 
 
+# Displays all the rules of the game on a fast reading pace
 def regras():
     lines('Regras')
     for i in regra:
